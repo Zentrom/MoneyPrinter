@@ -3,6 +3,10 @@
 - setupCodespace3
 - [GenerateBackend](generatebackend.md)
 
+- Dies with 4+ paragraph
+- customPrompt gets answered first
+- [TTS](TTS.md)
+
 # MoneyPrinter 💸
 
 Sponsored by Post Bridge
