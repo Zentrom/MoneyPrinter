@@ -1,3 +1,5 @@
+- [GenerateBackend](generatebackend.md)
+
 # MoneyPrinter 💸
 
 Sponsored by Post Bridge
