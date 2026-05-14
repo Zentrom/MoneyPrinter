@@ -1,0 +1,1 @@
+docker cp worker:/app/temp/output.mp4 ./output.mp4
