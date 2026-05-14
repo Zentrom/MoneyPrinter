@@ -1,3 +1,6 @@
+- setupCodespace
+- setupCodespace2
+- setupCodespace3
 - [GenerateBackend](generatebackend.md)
 
 # MoneyPrinter 💸
@@ -28,7 +31,7 @@ MoneyPrinter now uses a DB-backed generation queue (API + worker + Postgres in D
 
 Docs are centralized in [`docs/`](docs/README.md):
 
-- [Interactive Setup Script](setup.sh)
+- [Interactive Setup Script](unusedsetup.sh)
 - [Quickstart](docs/quickstart.md)
 - [Configuration](docs/configuration.md)
 - [Architecture](docs/architecture.md)
