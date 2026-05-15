@@ -238,6 +238,10 @@ def run_generation_pipeline(
     guard_cancelled()
 
     if use_music:
+        emit(
+            "[+] Trying to use music.",
+            "success",
+        )
         song_path = choose_random_song()
 
         if not song_path:
@@ -248,6 +252,10 @@ def run_generation_pipeline(
             use_music = False
 
         if use_music:
+            emit(
+                "[+] Found song for music.",
+                "success",
+            )
             video_clip = VideoFileClip(rendered_video_path)
             song_clip = None
             mixed_audio = None
@@ -343,6 +351,10 @@ def run_generation_pipeline(
                     os.remove(mixed_audio_path)
 
     if not use_music:
+        emit(
+            "[-] Music was not used for video.",
+            "warning",
+        )
         shutil.copy2(rendered_video_path, final_output_path)
 
     emit(f"[+] Video generated: {final_video_path}!", "success")
