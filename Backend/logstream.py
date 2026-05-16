@@ -92,6 +92,6 @@ def log(message: str, level: str = "info") -> None:
 
     Prints to the terminal **and** pushes an ANSI-stripped copy to the SSE queue.
     """
-    print(message)
+    print(message, flush=True)
     clean = _ANSI_RE.sub("", str(message))
     log_stream.push(clean, level)

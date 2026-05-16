@@ -30,6 +30,8 @@ SSH into container:
 docker exec -it CONTAINERNAME sh
 docker cp ./Songs/song.mp3 worker:/app/Songs
 
+docker cp worker:app/temp/ outConv.m4a
+
 curl -X POST \
   -F "songs=@Songs/song.mp3" \
   http://localhost:8080/api/upload-songs
@@ -44,3 +46,7 @@ Llama 3.1 / 1 paragraph / thread 4 / 4core GitHCodespace = 6:15 minutes
 
 Faster - 1b
 Llama 3.2 / 2 paragraph / thread 4 / 4core GitHCodespace = 3:20 minutes
+
+
+
+ffmpeg -y -i ./output.mp4 -i ./4e56288e-6f90-42e6-b61c-b1d0cc8801ed_mixed_audio.m4a -map 0:v:0 -map 1:a:0 -c:v copy -c:a aac -b:a 192k -shortest ./test_out.mp4

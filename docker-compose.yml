@@ -41,6 +41,7 @@ services:
       - ./files:/temp
       - ./Backend:/app/backend
       - ./fonts:/app/fonts
+      - ./Songs:/app/Songs
     environment:
       - ASSEMBLY_AI_API_KEY=${ASSEMBLY_AI_API_KEY}
       - TIKTOK_SESSION_ID=${TIKTOK_SESSION_ID}
@@ -59,13 +60,14 @@ services:
   worker:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.worker
     container_name: "worker"
     command: ["python3", "backend/worker.py"]
     volumes:
       - ./files:/temp
       - ./Backend:/app/backend
       - ./fonts:/app/fonts
+      - ./Songs:/app/Songs
     environment:
       - ASSEMBLY_AI_API_KEY=${ASSEMBLY_AI_API_KEY}
       - TIKTOK_SESSION_ID=${TIKTOK_SESSION_ID}

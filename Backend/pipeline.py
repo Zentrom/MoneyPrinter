@@ -256,11 +256,12 @@ def run_generation_pipeline(
                 "[+] Found song for music.",
                 "success",
             )
-            video_clip = VideoFileClip(rendered_video_path)
+            video_clip = None
             song_clip = None
             mixed_audio = None
             mixed_audio_path = str(TEMP_DIR / f"{uuid4()}_mixed_audio.m4a")
             try:
+                video_clip = VideoFileClip(rendered_video_path)
                 original_duration = video_clip.duration
                 original_audio = video_clip.audio
                 song_clip = AudioFileClip(song_path).with_fps(44100)
@@ -277,12 +278,11 @@ def run_generation_pipeline(
                     fps=44100,
                     codec="aac",
                     bitrate="192k",
+                    write_logfile=True,
                 )
-            except Exception:
-                emit(
-                    "[!] Mixed audio write failed.",
-                    "warning",
-                )
+                emit("[debug] finished writing mixed audio", "info")
+            except Exception as err:
+                emit(f"[!] Mixed audio write failed: {err}", "warning")
             finally:
                 video_clip.close()
                 if mixed_audio is not None:
@@ -316,14 +316,15 @@ def run_generation_pipeline(
                     capture_output=True,
                     text=True,
                 )
-            except Exception:
+            except Exception as err2:
                 emit(
-                    "[!] ffmpeg remux failed. Falling back to MoviePy render for music mix.",
+                    f"[!] ffmpeg remux failed: {err2}. Falling back to MoviePy render for music mix.",
                     "warning",
                 )
-                video_clip = VideoFileClip(rendered_video_path)
+                video_clip = None
                 song_clip = None
                 try:
+                    video_clip = VideoFileClip(rendered_video_path)
                     original_duration = video_clip.duration
                     original_audio = video_clip.audio
                     song_clip = AudioFileClip(song_path).with_fps(44100)
@@ -347,13 +348,18 @@ def run_generation_pipeline(
                         audio_codec="aac",
                         preset="medium",
                     )
+                except Exception as err3:
+                    emit(
+                        f"[!] MoviePy music mix failed: {err3}",
+                        "warning",
+                    )
                 finally:
                     video_clip.close()
                     if song_clip is not None:
                         song_clip.close()
-            finally:
-                if os.path.exists(mixed_audio_path):
-                    os.remove(mixed_audio_path)
+            #finally:
+            #    if os.path.exists(mixed_audio_path):
+            #        os.remove(mixed_audio_path)
 
     if not use_music:
         emit(
