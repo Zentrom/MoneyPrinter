@@ -9,14 +9,14 @@ curl -X POST http://localhost:8080/api/generate \
 curl -X POST http://localhost:8080/api/generate \
   -H "Content-Type: application/json" \
   -d '{
-    "videoSubject":"Andrew Tate",
+    "videoSubject":"George Bush",
     "aiModel":"llama3.2:1b",
     "voice":"en_us_010",
-    "paragraphNumber":1,
+    "paragraphNumber":2,
     "threads":4,
     "color":"#FFFF00",
-    "useMusic":"True",
-    "automateYoutubeUpload":"False",
+    "useMusic":true,
+    "automateYoutubeUpload":false,
     "customPrompt":"",
     "subtitlesPosition":"center,top"
   }'
@@ -28,6 +28,14 @@ docker cp worker:/app/temp/output.mp4 ./output.mp4
 
 SSH into container:
 docker exec -it CONTAINERNAME sh
+docker cp ./Songs/song.mp3 worker:/app/Songs
+
+curl -X POST \
+  -F "songs=@Songs/song.mp3" \
+  http://localhost:8080/api/upload-songs
+
+curl -X POST http://localhost:8080/api/upload-songs \
+  $(for f in ./Songs/*.mp3; do echo -n "-F songs=@$f "; done)
 
 ---------------------------------------------------
 Slower - 8b

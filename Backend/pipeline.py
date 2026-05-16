@@ -278,6 +278,11 @@ def run_generation_pipeline(
                     codec="aac",
                     bitrate="192k",
                 )
+            except Exception:
+                emit(
+                    "[!] Mixed audio write failed.",
+                    "warning",
+                )
             finally:
                 video_clip.close()
                 if mixed_audio is not None:
