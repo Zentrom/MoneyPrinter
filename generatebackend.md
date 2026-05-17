@@ -9,14 +9,14 @@ curl -X POST http://localhost:8080/api/generate \
 curl -X POST http://localhost:8080/api/generate \
   -H "Content-Type: application/json" \
   -d '{
-    "videoSubject":"Obama.",
+    "videoSubject":"Red cars.",
     "aiModel":"llama3.2:1b",
     "voice":"en_us_006",
     "paragraphNumber":2,
     "threads":4,
-    "color":"#FFFF00",
-    "useMusic":false,
-    "automateYoutubeUpload":true,
+    "color":"#00FF00",
+    "useMusic":true,
+    "automateYoutubeUpload":false,
     "customPrompt":"",
     "subtitlesPosition":"center,top"
   }'
@@ -53,6 +53,31 @@ curl -X POST \
 
 curl -X POST http://localhost:8080/api/upload-songs \
   $(for f in ./Songs/*.mp3; do echo -n "-F songs=@$f "; done)
+
+curl -X POST http://localhost:8080/api/cancel
+
+docker cp ./Backend/auth_youtube.py worker:/app/backend/
+python3 ./backend/auth_youtube.py
+docker cp worker:/app/backend/youtube-oauth2.json ./Backend/
+
+curl -X POST http://localhost:11434/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "llama3.1:8b",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Generate a catchy and SEO-friendly title for a YouTube shorts video about Gym motivation. Return ONLY one raw title string, single sentence, no numbering, no quotes, no extra commentary. MAX 100 characters."
+      }
+    ]
+  }'
+
+curl -X POST http://localhost:11434/api/generate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "llama3.1:8b",
+    "prompt": "Write a brief and engaging description for a YouTube shorts video about Gym Motication. Get straight to the point. Do not start with unnecessary things."
+  }'
 
 ---------------------------------------------------
 Slower - 8b

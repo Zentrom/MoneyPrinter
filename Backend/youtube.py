@@ -72,15 +72,21 @@ def get_authenticated_service():
         any: The authenticated YouTube service.
     """
     flow = flow_from_clientsecrets(
-        CLIENT_SECRETS_FILE, scope=SCOPES, message=MISSING_CLIENT_SECRETS_MESSAGE
+        CLIENT_SECRETS_FILE,
+        scope=SCOPES,
+        message=MISSING_CLIENT_SECRETS_MESSAGE,
     )
 
-    oauth_store = BASE_DIR / f"{Path(sys.argv[0]).name}-oauth2.json"
+    oauth_store = BASE_DIR / "youtube-oauth2.json"
+
+    # ensure directory exists
+    oauth_store.parent.mkdir(parents=True, exist_ok=True)
+
     storage = Storage(str(oauth_store))
     credentials = storage.get()
 
     if credentials is None or credentials.invalid:
-        flags = argparser.parse_args()
+        flags = argparser.parse_args(args=[])
         credentials = run_flow(flow, storage, flags)
 
     return build(

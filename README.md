@@ -7,6 +7,10 @@
 - customPrompt gets answered first
 - [TTS](TTS.md)
 
+## Auth
+- docker exec -it worker sh
+- python3 ./backend/auth_youtube.py
+
 # MoneyPrinter 💸
 
 Sponsored by Post Bridge

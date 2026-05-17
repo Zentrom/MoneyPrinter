@@ -178,59 +178,6 @@ def run_generation_pipeline(
             f"Could not render final video. Check subtitle/font/ImageMagick setup. ({err})"
         ) from err
 
-    title, description, keywords = generate_metadata(
-        data["videoSubject"], script, ai_model
-    )
-
-    emit("[-] Metadata for YouTube upload:", "info")
-    emit("   Title:", "info")
-    emit(f"   {title}", "info")
-    emit("   Description:", "info")
-    emit(f"   {description}", "info")
-    emit("   Keywords:", "info")
-    emit(f"  {', '.join(keywords)}", "info")
-
-    if automate_youtube_upload:
-        client_secrets_file = str((BASE_DIR / "client_secret.json").resolve())
-        skip_yt_upload = False
-        if not os.path.exists(client_secrets_file):
-            skip_yt_upload = True
-            emit(
-                "[-] Client secrets file missing. YouTube upload will be skipped.",
-                "warning",
-            )
-            emit(
-                "[-] Please download the client_secret.json from Google Cloud Platform and store this inside the /Backend directory.",
-                "error",
-            )
-
-        if not skip_yt_upload:
-            video_category_id = "28"
-            privacy_status = "private"
-            video_metadata = {
-                "video_path": str((TEMP_DIR / final_video_path).resolve()),
-                "title": title,
-                "description": description,
-                "category": video_category_id,
-                "keywords": ",".join(keywords),
-                "privacyStatus": privacy_status,
-            }
-
-            try:
-                video_response = upload_video(
-                    video_path=video_metadata["video_path"],
-                    title=video_metadata["title"],
-                    description=video_metadata["description"],
-                    category=video_metadata["category"],
-                    keywords=video_metadata["keywords"],
-                    privacy_status=video_metadata["privacyStatus"],
-                )
-                emit(f"Uploaded video ID: {video_response.get('id')}", "success")
-            except HttpError as err:
-                emit(
-                    f"An HTTP error {err.resp.status} occurred:\n{err.content}", "error"
-                )
-
     final_output_path = str(PROJECT_ROOT / final_video_path)
     rendered_video_path = str(TEMP_DIR / final_video_path)
     render_threads = n_threads or (os.cpu_count() or 2)
@@ -369,6 +316,59 @@ def run_generation_pipeline(
         shutil.copy2(rendered_video_path, final_output_path)
 
     emit(f"[+] Video generated: {final_video_path}!", "success")
+
+    if automate_youtube_upload:
+        title, description, keywords = generate_metadata(
+            data["videoSubject"], script, ai_model
+        )
+
+        emit("[-] Metadata for YouTube upload:", "info")
+        emit("   Title:", "info")
+        emit(f"   {title}", "info")
+        emit("   Description:", "info")
+        emit(f"   {description}", "info")
+        emit("   Keywords:", "info")
+        emit(f"  {', '.join(keywords)}", "info")
+
+        client_secrets_file = str((BASE_DIR / "client_secret.json").resolve())
+        skip_yt_upload = False
+        if not os.path.exists(client_secrets_file):
+            skip_yt_upload = True
+            emit(
+                "[-] Client secrets file missing. YouTube upload will be skipped.",
+                "warning",
+            )
+            emit(
+                "[-] Please download the client_secret.json from Google Cloud Platform and store this inside the /Backend directory.",
+                "error",
+            )
+
+        if not skip_yt_upload:
+            video_category_id = "28"
+            privacy_status = "private"
+            video_metadata = {
+                "video_path": str((PROJECT_ROOT / final_output_path).resolve()),
+                "title": title,
+                "description": description,
+                "category": video_category_id,
+                "keywords": ",".join(keywords),
+                "privacyStatus": privacy_status,
+            }
+
+            try:
+                video_response = upload_video(
+                    video_path=video_metadata["video_path"],
+                    title=video_metadata["title"],
+                    description=video_metadata["description"],
+                    category=video_metadata["category"],
+                    keywords=video_metadata["keywords"],
+                    privacy_status=video_metadata["privacyStatus"],
+                )
+                emit(f"Uploaded video ID: {video_response.get('id')}", "success")
+            except HttpError as err:
+                emit(
+                    f"An HTTP error {err.resp.status} occurred:\n{err.content}", "error"
+                )
 
     if os.name == "nt":
         subprocess.run(

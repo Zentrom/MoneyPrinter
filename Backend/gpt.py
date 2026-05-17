@@ -312,6 +312,45 @@ def get_search_terms(
     return search_terms
 
 
+def sanitize_title(raw: str, max_length: int = 100) -> str:
+    if not raw:
+        return ""
+    s = raw.strip()
+
+    # normalize quotes and remove common markdown markers
+    s = s.replace("“", '"').replace("”", '"')
+    s = re.sub(r'[*_`~]+', '', s)
+
+    # try to extract first quoted string: "Title"
+    m = re.search(r'"([^"]{3,})"', s)
+    if m:
+        s = m.group(1)
+    else:
+        # fallback: pick the first meaningful line, strip numbering and trailing metadata
+        lines = [l.strip() for l in s.splitlines() if l.strip()]
+        for line in lines:
+            if re.match(r'^(choose|remember|here are|options)', line, re.I):
+                continue
+            line = re.sub(r'^\s*\d+\s*[\.\)\-:]\s*', '', line)          # leading "1. "
+            line = re.sub(r'\s*\([^)]*\)\s*$', '', line)               # trailing "(15 words...)"
+            line = re.sub(r'\s*[-–—:]\s*[^-–—:]+$', '', line)          # trailing " - meta"
+            if len(line) > 3:
+                s = line
+                break
+        else:
+            s = lines[0] if lines else s
+
+    # normalize whitespace
+    s = re.sub(r'\s+', ' ', s).strip()
+
+    # truncate at word boundary and append ellipsis if necessary
+    if len(s) > max_length:
+        cut = s[: max_length + 1]
+        cut = cut.rsplit(' ', 1)[0]
+        s = cut.rstrip(' ,;:.-') + "..."
+
+    return s
+
 def generate_metadata(
     video_subject: str, script: str, ai_model: str
 ) -> Tuple[str, str, List[str]]:
@@ -330,14 +369,17 @@ def generate_metadata(
     # Build prompt for title
     title_prompt = f"""  
     Generate a catchy and SEO-friendly title for a YouTube shorts video about {video_subject}.  
+    Return ONLY one raw title string, single sentence, no numbering, no quotes, no extra commentary. MAX 100 characters.  
     """
 
     # Generate title
-    title = generate_response(title_prompt, ai_model).strip()
+    title_raw = generate_response(title_prompt, ai_model).strip()
+    title = sanitize_title(title_raw, max_length=100)
 
     # Build prompt for description
     description_prompt = f"""  
     Write a brief and engaging description for a YouTube shorts video about {video_subject}.  
+    Get straight to the point. Do not start with unnecessary things.
     The video is based on the following script:  
     {script}  
     """
