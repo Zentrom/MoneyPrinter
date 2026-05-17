@@ -16,3 +16,4 @@ youtube-oauth2.json
 .DS_Store
 Backend/output*
 venv/
+moneyprinter.db

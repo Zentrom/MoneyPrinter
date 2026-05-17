@@ -1,17 +1,36 @@
-- sudo apt-get update && apt-get install --no-install-recommends -y \
-    build-essential autoconf pkg-config wget ghostscript curl libpng-dev ffmpeg
+- sudo apt-get update && sudo apt-get install --no-install-recommends -y \
+    build-essential autoconf pkg-config wget libjpeg-dev zlib1g-dev ghostscript curl libpng-dev ffmpeg \
+
 - curl -fsSL https://ollama.com/install.sh | sh
-- ./setup.sh
+- cd ..
+- sudo wget https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-31.tar.gz && \
+    tar xzf 7.1.0-31.tar.gz && \
+    rm 7.1.0-31.tar.gz && \
+    sudo apt-get clean && \
+    sudo apt-get autoremove
+- sudo sh ./ImageMagick-7.1.0-31/configure --prefix=/usr/local --with-bzlib=yes --with-fontconfig=yes --with-freetype=yes --with-gslib=yes --with-gvc=yes --with-jpeg=yes --with-jp2=yes --with-png=yes --with-tiff=yes --with-xml=yes --with-gs-font-dir=yes && \
+    make -j && make install && ldconfig /usr/local/lib/
+- cd MoneyPrinter
+- ollama serve
+- sudo ./setup.sh
 - ollama pull llama3.2:1b
 - ollama pull llama3.1:8b
+
+1. Start backend: uv run python Backend/main.py
+2. Start worker (new terminal): uv run python Backend/worker.py
+3. Start frontend (new terminal): python3 -m http.server 3000 --directory Frontend
+
+## Auth
+- python3 ./backend/auth_youtube.py
+
 - [GenerateBackend](generatebackend.md)
 
+- You can see the progress bar of MoviePy in non-docker version
 - Dies with 4+ paragraph
 - customPrompt gets answered first
 - [TTS](TTS.md)
 
 ## Auth
-- docker exec -it worker sh
 - python3 ./backend/auth_youtube.py
 
 # MoneyPrinter 💸

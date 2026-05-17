@@ -330,9 +330,10 @@ def run_generation_pipeline(
         emit("   Keywords:", "info")
         emit(f"  {', '.join(keywords)}", "info")
 
+        youtube_auth_file = str((BASE_DIR / "youtube-oauth2.json").resolve())
         client_secrets_file = str((BASE_DIR / "client_secret.json").resolve())
         skip_yt_upload = False
-        if not os.path.exists(client_secrets_file):
+        if not os.path.exists(youtube_auth_file) and not os.path.exists(client_secrets_file):
             skip_yt_upload = True
             emit(
                 "[-] Client secrets file missing. YouTube upload will be skipped.",

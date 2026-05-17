@@ -15,7 +15,7 @@ curl -X POST http://localhost:8080/api/generate \
     "paragraphNumber":2,
     "threads":4,
     "color":"#00FF00",
-    "useMusic":true,
+    "useMusic":false,
     "automateYoutubeUpload":false,
     "customPrompt":"",
     "subtitlesPosition":"center,top"
