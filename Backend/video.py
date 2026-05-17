@@ -22,6 +22,7 @@ from utils import ENV_FILE, TEMP_DIR, SUBTITLES_DIR, FONTS_DIR
 load_dotenv(ENV_FILE)
 
 ASSEMBLY_AI_API_KEY = os.getenv("ASSEMBLY_AI_API_KEY")
+SPEECH_MODEL = os.getenv("ASSEMBLY_AI_SPEECH_MODEL")
 FRAME_EPSILON = 1 / 120
 
 
@@ -70,7 +71,8 @@ def __generate_subtitles_assemblyai(audio_path: str, voice: str) -> str:
         lang_code = voice
 
     aai.settings.api_key = ASSEMBLY_AI_API_KEY
-    config = aai.TranscriptionConfig(language_code=lang_code)
+    speech_model = SPEECH_MODEL
+    config = aai.TranscriptionConfig(language_code=lang_code, speech_models=[speech_model])
     transcriber = aai.Transcriber(config=config)
     transcript = transcriber.transcribe(audio_path)
     subtitles = transcript.export_subtitles_srt()
@@ -138,7 +140,7 @@ def generate_subtitles(
     SUBTITLES_DIR.mkdir(parents=True, exist_ok=True)
     subtitles_path = SUBTITLES_DIR / f"{uuid.uuid4()}.srt"
 
-    if ASSEMBLY_AI_API_KEY is not None and ASSEMBLY_AI_API_KEY != "":
+    if ASSEMBLY_AI_API_KEY is not None and ASSEMBLY_AI_API_KEY != "" and SPEECH_MODEL != "":
         log("[+] Creating subtitles using AssemblyAI", "info")
         subtitles = __generate_subtitles_assemblyai(audio_path, voice)
     else:

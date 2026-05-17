@@ -9,13 +9,28 @@ curl -X POST http://localhost:8080/api/generate \
 curl -X POST http://localhost:8080/api/generate \
   -H "Content-Type: application/json" \
   -d '{
-    "videoSubject":"George Bush",
+    "videoSubject":"Obama.",
     "aiModel":"llama3.2:1b",
-    "voice":"en_us_010",
+    "voice":"en_us_006",
     "paragraphNumber":2,
     "threads":4,
     "color":"#FFFF00",
-    "useMusic":true,
+    "useMusic":false,
+    "automateYoutubeUpload":true,
+    "customPrompt":"",
+    "subtitlesPosition":"center,top"
+  }'
+
+curl -X POST http://localhost:8080/api/generate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "videoSubject":"Gym motivation.",
+    "aiModel":"llama3.1:8b",
+    "voice":"en_us_006",
+    "paragraphNumber":2,
+    "threads":4,
+    "color":"#00FF00",
+    "useMusic":false,
     "automateYoutubeUpload":false,
     "customPrompt":"",
     "subtitlesPosition":"center,top"

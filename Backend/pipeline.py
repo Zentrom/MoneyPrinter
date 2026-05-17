@@ -280,7 +280,7 @@ def run_generation_pipeline(
                     bitrate="192k",
                     write_logfile=True,
                 )
-                emit("[debug] finished writing mixed audio", "info")
+                emit("[+] Finished writing mixed audio", "info")
             except Exception as err:
                 emit(f"[!] Mixed audio write failed: {err}", "warning")
             finally:

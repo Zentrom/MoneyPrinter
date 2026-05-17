@@ -44,6 +44,7 @@ services:
       - ./Songs:/app/Songs
     environment:
       - ASSEMBLY_AI_API_KEY=${ASSEMBLY_AI_API_KEY}
+      - ASSEMBLY_AI_SPEECH_MODEL=${ASSEMBLY_AI_SPEECH_MODEL}
       - TIKTOK_SESSION_ID=${TIKTOK_SESSION_ID}
       - IMAGEMAGICK_BINARY=/usr/local/bin/magick
       - PEXELS_API_KEY=${PEXELS_API_KEY}
@@ -70,6 +71,7 @@ services:
       - ./Songs:/app/Songs
     environment:
       - ASSEMBLY_AI_API_KEY=${ASSEMBLY_AI_API_KEY}
+      - ASSEMBLY_AI_SPEECH_MODEL=${ASSEMBLY_AI_SPEECH_MODEL}
       - TIKTOK_SESSION_ID=${TIKTOK_SESSION_ID}
       - IMAGEMAGICK_BINARY=/usr/local/bin/magick
       - PEXELS_API_KEY=${PEXELS_API_KEY}
