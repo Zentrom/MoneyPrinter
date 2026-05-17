@@ -1,6 +1,9 @@
-- setupCodespace
-- setupCodespace2
-- setupCodespace3
+- sudo apt-get update && apt-get install --no-install-recommends -y \
+    build-essential autoconf pkg-config wget ghostscript curl libpng-dev ffmpeg
+- curl -fsSL https://ollama.com/install.sh | sh
+- ./setup.sh
+- ollama pull llama3.2:1b
+- ollama pull llama3.1:8b
 - [GenerateBackend](generatebackend.md)
 
 - Dies with 4+ paragraph
